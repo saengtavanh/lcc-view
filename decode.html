@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Decode Query</title>
+</head>
+<body>
+<h2>Decoded Query Result</h2>
+
+<div id="result"></div>
+
+<script>
+// 1. Read the query string
+const params = new URLSearchParams(window.location.search);
+
+// 2. Get the value of "data"
+const encodedData = params.get("data");
+
+// 3. Decode it
+const decoded = encodedData ? decodeURIComponent(encodedData) : "(no data received)";
+
+document.getElementById("result").innerText = decoded;
+</script>
+
+</body>
+</html>

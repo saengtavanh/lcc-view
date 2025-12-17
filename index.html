@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #f3f4f6;
+        color: #111827;
+        margin: 0;
+        padding: 16px;
+      }
+      .card {
+        background: #ffffff;
+        padding: 16px 20px;
+        border-radius: 12px;
+        max-width: 960px;
+        margin: 0 auto;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        border-top: 4px solid #dc2626;
+      }
+      h1 {
+        margin-top: 0;
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #b91c1c;
+      }
+      h1::before {
+        content: "";
+        width: 8px;
+        height: 24px;
+        border-radius: 999px;
+        background: #ef4444;
+      }
+      label {
+        font-size: 13px;
+        color: #6b7280;
+      }
+      button {
+        font-size: 14px;
+      }
+
+      .select-wrapper {
+        position: relative;
+        display: inline-block;
+        min-width: 260px;
+      }
+      .select-wrapper select {
+        width: 100%;
+        padding: 6px 28px 6px 10px;
+        border-radius: 999px;
+        border: 1px solid #fecaca;
+        background: #fef2f2;
+        color: #b91c1c;
+        font-size: 13px;
+        outline: none;
+        appearance: none;
+      }
+      .select-wrapper select:focus {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 1px rgba(248,113,113,0.3);
+      }
+      .select-wrapper::after {
+        content: "▾";
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 10px;
+        color: #b91c1c;
+        pointer-events: none;
+      }
+
+      input[type="number"],
+      input[type="date"] {
+        padding: 6px 8px;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        color: #111827;
+        font-size: 13px;
+        outline: none;
+      }
+      input[type="number"]:focus,
+      input[type="date"]:focus {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 1px rgba(248,113,113,0.3);
+      }
+
+      .product-info {
+        padding: 10px;
+        border-radius: 10px;
+        background: #fef2f2;
+        margin-bottom: 8px;
+        min-height: 40px;
+        border: 1px solid #fecaca;
+        font-size: 13px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 13px;
+      }
+      th, td {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 6px 4px;
+      }
+      th {
+        text-align: left;
+        color: #9b1c1c;
+        background: #fee2e2;
+      }
+      tfoot td {
+        font-weight: bold;
+        background: #fef2f2;
+      }
+      .right {
+        text-align: right;
+      }
+      .error {
+        color: #b91c1c;
+        font-size: 13px;
+        margin-top: 4px;
+      }
+      .success {
+        color: #16a34a;
+        font-size: 13px;
+        margin-top: 4px;
+      }
+      .qty-buttons button {
+        padding: 2px 6px;
+        margin: 0 2px;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+        color: #111827;
+        cursor: pointer;
+      }
+      .qty-buttons button:hover {
+        background: #fee2e2;
+        border-color: #fecaca;
+      }
+
+      .btn-primary {
+        background: #dc2626;
+        border: 1px solid #b91c1c;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn-primary:hover {
+        background: #b91c1c;
+      }
+      .btn-secondary {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        color: #111827;
+        padding: 7px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .btn-secondary:hover {
+        background: #e5e7eb;
+      }
+
+      /* ===== Loading overlay ===== */
+      .loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(249,250,251,0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      .loading-box {
+        background: #ffffff;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        border-top: 3px solid #ef4444;
+      }
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border-radius: 999px;
+        border: 3px solid rgba(254,202,202,0.9);
+        border-top-color: #ef4444;
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* ===== Custom confirm/payment modal ===== */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15,23,42,0.4);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9998;
+      }
+      .modal-box {
+        background: #ffffff;
+        padding: 16px 20px;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        max-width: 420px;
+        width: 100%;
+        font-size: 14px;
+        border-top: 4px solid #dc2626;
+      }
+      .modal-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #b91c1c;
+      }
+      .modal-section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b7280;
+        margin-top: 8px;
+        margin-bottom: 4px;
+      }
+      .modal-row {
+        margin-bottom: 4px;
+        font-size: 13px;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .modal-2col {
+        display: flex;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .modal-2col > div {
+        flex: 1;
+      }
+
+      .qr-box {
+        margin-top: 8px;
+        padding: 8px;
+        background: #fef2f2;
+        border-radius: 10px;
+        border: 1px solid #fecaca;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .qr-box img {
+        max-width: 180px;
+        border-radius: 8px;
+      }
+      .qr-note {
+        font-size: 11px;
+        color: #6b7280;
+      }
+
+      .small-hint {
+        font-size: 12px;
+        color: #6b7280;
+      }
+
+      #debtDateContainer {
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <div id="loadingText">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Custom confirm/payment modal -->
+    <div id="confirmModalBackdrop" class="modal-backdrop">
+      <div class="modal-box">
+        <div class="modal-title">Confirm & Payment</div>
+
+        <div class="modal-section-title">Summary</div>
+        <div class="modal-row">
+          Customer: <span id="confirmCustomer">No customer</span>
+        </div>
+        <div class="modal-row">
+          Items: <span id="confirmItemsCount">0</span>
+        </div>
+        <div class="modal-row">
+          Subtotal: <span id="confirmSubtotal">0</span>
+        </div>
+        <div class="modal-row">
+          Discount: <span id="confirmDiscount">0</span>
+        </div>
+        <div class="modal-row">
+          Total: <strong><span id="confirmTotal">0</span></strong>
+        </div>
+
+        <div class="modal-section-title">Payment</div>
+        <div class="modal-2col">
+          <div>
+            <label>Method</label><br>
+            <div class="select-wrapper">
+              <select id="paymentMethodSelect">
+                <option value="cash">Cash</option>
+                <option value="transfer">Transfer</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label>Status</label><br>
+            <div class="select-wrapper">
+              <select id="paymentStatusSelect">
+                <option value="paid">Paid</option>
+                <option value="debt">Debt</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Debt date (only when Status = Debt) -->
+        <div id="debtDateContainer" style="display:none;">
+          <label for="debtDateInput">Debt due date</label><br>
+          <input id="debtDateInput" type="date">
+        </div>
+
+        <div class="qr-box">
+          <img
+            id="qrImage"
+            src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=SYSTORY+PAYMENT"
+            alt="Payment QR"
+          >
+          <div class="qr-note">
+            Scan this QR for transfer. (Replace QR URL in code with your real one.)
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+          <button class="btn-primary" onclick="confirmSaleFromModal()">Confirm & Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h1>POS Sell</h1>
+
+      <!-- Customer select -->
+      <div style="margin-bottom:8px; font-size:14px;">
+        <label for="customerSelect">ລູກຄ້າ (ບໍ່ບັງຄັບ):</label><br>
+        <div class="select-wrapper">
+          <select id="customerSelect">
+            <option value="">-- ເລືອກລູກຄ້າ --</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Info for the cashier -->
+      <div style="margin-bottom:8px;" class="small-hint">
+        ✅ ພ້ອມທີ່ຈະສະແກນແລ້ວ. ພຽງແຕ່ສະແກນບາໂຄດ - ບໍ່ຈຳເປັນຕ້ອງຄລິກຫຍັງ ຫຼື ສຸມໃສ່ການປ້ອນຂໍ້ມູນ.<br>
+          ການສະແກນແຕ່ລະຄັ້ງຈະເພີ່ມຜະລິດຕະພັນໃສ່ກະຕ່າໂດຍອັດຕະໂນມັດໂດຍມີປະລິມານ = 1.
+      </div>
+
+      <!-- Product info -->
+      <div id="productInfo" class="product-info">
+        Ready. Please scan a barcode.
+      </div>
+
+      <!-- Cart -->
+      <h2 style="font-size:16px;margin-top:16px;color:#b91c1c;">Cart</h2>
+      <table id="cartTable">
+        <thead>
+          <tr>
+            <th>Barcode</th>
+            <th>Name</th>
+            <th class="right">Qty</th>
+            <th class="right">Unit</th>
+            <th class="right">Price</th>
+            <th class="right">Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="cartBody">
+          <!-- items go here -->
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" class="right">Grand Total (after discount)</td>
+            <td class="right" id="grandTotal">0</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- Subtotal / Discount -->
+      <div style="margin-top:6px; font-size:13px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <span>Subtotal: <span id="subtotalAmount">0</span></span>
+        <span>|</span>
+        <label>Discount:
+          <input id="discountInput" type="number" value="0" min="0" style="width:100px; text-align:right;" >
+        </label>
+      </div>
+
+      <div style="margin-top:12px;">
+        <button id="saveBtn" class="btn-primary" onclick="saveSale()">Save Sale</button>
+        <span id="message" class=""></span>
+      </div>
+    </div>
+
+    <script>
+      let products = [];       // all products loaded from sheet
+      let customers = [];      // all customers loaded from car sheet
+      let selectedCustomerId = '';
+      let cart = [];
+      let scanBuffer = '';
+      let lastKeyTime = 0;
+      const SCAN_TIMEOUT = 300; // ms
+
+      const infoEl = document.getElementById('productInfo');
+      const cartBodyEl = document.getElementById('cartBody');
+      const grandTotalEl = document.getElementById('grandTotal');
+      const subtotalEl = document.getElementById('subtotalAmount');
+      const discountInput = document.getElementById('discountInput');
+      const messageEl = document.getElementById('message');
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const loadingTextEl = document.getElementById('loadingText');
+      const saveBtn = document.getElementById('saveBtn');
+      const customerSelect = document.getElementById('customerSelect');
+
+      const confirmBackdrop = document.getElementById('confirmModalBackdrop');
+      const confirmCustomerEl = document.getElementById('confirmCustomer');
+      const confirmItemsCountEl = document.getElementById('confirmItemsCount');
+      const confirmSubtotalEl = document.getElementById('confirmSubtotal');
+      const confirmDiscountEl = document.getElementById('confirmDiscount');
+      const confirmTotalEl = document.getElementById('confirmTotal');
+
+      const paymentMethodSelect = document.getElementById('paymentMethodSelect');
+      const paymentStatusSelect = document.getElementById('paymentStatusSelect');
+      const debtDateContainer = document.getElementById('debtDateContainer');
+      const debtDateInput = document.getElementById('debtDateInput');
+
+      let pendingSaleContext = null; // used by confirm popup
+
+      function setLoading(isLoading, text) {
+        if (isLoading) {
+          loadingTextEl.textContent = text || 'Loading...';
+          loadingOverlay.style.display = 'flex';
+        } else {
+          loadingOverlay.style.display = 'none';
+        }
+      }
+
+      function setSaveButtonDisabled(disabled) {
+        if (!saveBtn) return;
+        saveBtn.disabled = disabled;
+      }
+
+      function showMessage(text, type) {
+        messageEl.textContent = text;
+        messageEl.className = type;
+      }
+
+      function getDiscount() {
+        const v = Number(discountInput.value);
+        return isNaN(v) || v < 0 ? 0 : v;
+      }
+
+      function calculateSubtotal() {
+        return cart.reduce((sum, item) => {
+          const qty = Number(item.qty) || 0;
+          const price = Number(item.price) || 0;
+          return sum + qty * price;
+        }, 0);
+      }
+
+      function getSelectedCustomerInfo() {
+        if (!selectedCustomerId) return null;
+        return customers.find(c => c.id === selectedCustomerId) || null;
+      }
+
+      function getTodayForInput() {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      // Build and open external bill URL (same as before)
+      function openBillPage(res, customerInfo, subtotal, discount, total) {
+        const baseUrl = 'https://product.systory.info/Car_service01/Bill_Invoice.php';
+
+        const now = new Date();
+        const pad2 = n => String(n).padStart(2, '0');
+        const dd = pad2(now.getDate());
+        const mm = pad2(now.getMonth() + 1);
+        const yyyy = now.getFullYear();
+
+        const dateDDMMYYYY = `${dd}/${mm}/${yyyy}`;   // 20/11/2025
+        const dateMMDDYYYY = `${mm}/${dd}/${yyyy}`;   // 11/20/2025
+
+        const params = new URLSearchParams({
+          Sell_ID: res.sellId || '',
+          date: dateDDMMYYYY,
+          ID_DT: '',
+          Status: 'admin',
+          Date: dateMMDDYYYY,
+          Group: '',
+          ProName: '',
+          Qty: '',
+          SellPrice: '',
+          Detail_Total: '',
+          No_Qo: res.noQo || '',
+          Total_Price: String(res.totalBefore ?? subtotal ?? 0),
+          Sale: '',
+          Total_All_Price: String(res.totalAfter ?? total ?? 0),
+          Total: String(res.totalAfter ?? total ?? 0),
+          ID_Pro: '',
+          Unit: '',
+          No_Thung: customerInfo?.no_thug || '',
+          No_Juk: customerInfo?.no_juk || '',
+          Sigh: customerInfo?.sigh || '',
+          Brand: customerInfo?.brand || '',
+          Model: customerInfo?.model || '',
+          Owner: customerInfo?.owner || '',
+          Name: customerInfo?.name || '',
+          Tel: customerInfo?.phone || '',
+          No_Re: res.noRe || '',
+          No_Iv: res.noIv || '',
+          Money_Rate: '',
+          Ref: '',
+          title: '',
+          desc: '',
+          amount: '',
+          unit_price: ''
+        });
+
+        const url = `${baseUrl}?${params.toString()}`;
+        window.open(url, '_blank');
+      }
+
+      // 🔄 Load products & customers once when page loads
+      window.addEventListener('load', function () {
+        setLoading(true, 'Loading products & customers...');
+
+        google.script.run
+          .withSuccessHandler(function (list) {
+            products = Array.isArray(list) ? list : [];
+            if (products.length) {
+              showMessage('Loaded ' + products.length + ' products. Ready to scan.', 'success');
+              infoEl.textContent = 'Ready. Please scan a barcode.';
+            } else {
+              showMessage('No products loaded from sheet.', 'error');
+              infoEl.textContent = 'ບໍ່ພົບສິນຄ້າໃນລະບົບ';
+            }
+            setLoading(false);
+          })
+          .withFailureHandler(function (err) {
+            showMessage('Error loading products: ' + err.message, 'error');
+            infoEl.textContent = 'Error loading products.';
+            setLoading(false);
+          })
+          .getAllProducts();
+
+        google.script.run
+          .withSuccessHandler(function (list) {
+            customers = Array.isArray(list) ? list : [];
+            customerSelect.innerHTML = '<option value="">-- ເລືອກລູກຄ້າ --</option>';
+            customers.forEach(function (c) {
+              const opt = document.createElement('option');
+              opt.value = c.id;
+              opt.textContent = c.label;
+              customerSelect.appendChild(opt);
+            });
+          })
+          .withFailureHandler(function (err) {
+            console.log('Error loading customers: ' + err.message);
+          })
+          .getAllCustomers();
+      });
+
+      customerSelect.addEventListener('change', function () {
+        selectedCustomerId = this.value;
+      });
+
+      discountInput.addEventListener('input', function () {
+        renderCart();
+      });
+
+      // Show/hide debt date input when status changes
+      paymentStatusSelect.addEventListener('change', function () {
+        if (this.value === 'debt') {
+          debtDateContainer.style.display = 'block';
+          if (!debtDateInput.value) {
+            debtDateInput.value = getTodayForInput();
+          }
+        } else {
+          debtDateContainer.style.display = 'none';
+        }
+      });
+
+      // Listen to ALL key presses (scanner emulates keyboard)
+      window.addEventListener('keydown', handleScanKey);
+
+      function handleScanKey(e) {
+        const key = e.key;
+        const now = Date.now();
+        const diff = now - lastKeyTime;
+
+        if (diff > SCAN_TIMEOUT) {
+          scanBuffer = '';
+        }
+        lastKeyTime = now;
+
+        if (key === 'Enter') {
+          let barcode = scanBuffer;
+          scanBuffer = '';
+          barcode = cleanBarcode(barcode);
+          if (barcode) {
+            processBarcode(barcode);
+          }
+        } else if (key.length === 1) {
+          scanBuffer += key;
+        }
+      }
+
+      function cleanBarcode(raw) {
+        return String(raw)
+          .trim()
+          .replace(/\s/g, '')
+          .replace(/[^0-9A-Za-z]/g, '');
+      }
+
+      function processBarcode(barcode) {
+        messageEl.textContent = '';
+        messageEl.className = '';
+
+        if (!products.length) {
+          infoEl.textContent = 'Products not loaded yet.';
+          showMessage('Products not loaded yet.', 'error');
+          return;
+        }
+
+        infoEl.textContent = 'Scanning: ' + barcode + ' ...';
+
+        const product = products.find(p => String(p.barcode) === barcode);
+
+        if (!product) {
+          infoEl.textContent = 'Product not found for barcode: ' + barcode;
+          showMessage('Product not found', 'error');
+          return;
+        }
+
+        const unitText = product.unit ? ` (${product.unit})` : '';
+        let price = product.price.toLocaleString();
+
+        infoEl.innerHTML = `
+          <div><b>${product.name}${unitText}</b></div>
+          <div>Barcode: ${product.barcode}</div>
+          <div>Price: ${product.price.toLocaleString()}</div>
+          <div style="font-size:12px;color:#6b7280;">Group: ${product.type || '-'}</div>
+          <div style="font-size:12px;color:#6b7280;">(Added 1 unit to cart)</div>
+        `;
+
+        addProductToCart(product, 1);
+      }
+
+      function addProductToCart(product, qty) {
+        qty = Number(qty) || 1;
+        const existing = cart.find(item => item.barcode === product.barcode);
+
+        if (existing) {
+          existing.qty += qty;
+        } else {
+          cart.push({
+            barcode: product.barcode,
+            name: product.name,
+            unit: product.unit || '',
+            price: product.price,
+            type: product.type || '',
+            qty: qty
+          });
+        }
+
+        renderCart();
+      }
+
+      function renderCart() {
+        cartBodyEl.innerHTML = '';
+        let subtotal = 0;
+
+        cart.forEach((item, index) => {
+          const lineTotal = (Number(item.qty) || 0) * (Number(item.price) || 0);
+          subtotal += lineTotal;
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.barcode}</td>
+            <td>${item.name}</td>
+            <td class="right">
+              <span class="qty-buttons">
+                <button onclick="changeCartQty(${index}, -1)">-</button>
+                ${item.qty}
+                <button onclick="changeCartQty(${index}, 1)">+</button>
+              </span>
+            </td>
+            <td class="right">${item.unit || ''}</td>
+            <td class="right">${item.price}</td>
+            <td class="right">${lineTotal}</td>
+            <td class="right">
+              <button class="btn-secondary" style="padding:2px 6px;border-radius:999px;font-size:11px;" onclick="removeFromCart(${index})">x</button>
+            </td>
+          `;
+          cartBodyEl.appendChild(tr);
+        });
+
+        const discount = getDiscount();
+        let total = subtotal - discount;
+        if (total < 0) total = 0;
+
+        subtotalEl.textContent = subtotal;
+        grandTotalEl.textContent = total;
+      }
+
+      function changeCartQty(index, delta) {
+        if (!cart[index]) return;
+        cart[index].qty += delta;
+        if (cart[index].qty <= 0) {
+          cart.splice(index, 1);
+        }
+        renderCart();
+      }
+
+      function removeFromCart(index) {
+        cart.splice(index, 1);
+        renderCart();
+      }
+
+      function openConfirmModal(ctx) {
+        const customerInfo = ctx.customerInfo;
+        if (customerInfo) {
+          confirmCustomerEl.textContent =
+            customerInfo.label || customerInfo.owner || customerInfo.name || customerInfo.id;
+        } else {
+          confirmCustomerEl.textContent = 'No customer';
+        }
+
+        confirmItemsCountEl.textContent = cart.length;
+        confirmSubtotalEl.textContent = ctx.subtotal;
+        confirmDiscountEl.textContent = ctx.discount;
+        confirmTotalEl.textContent = ctx.total;
+
+        paymentMethodSelect.value = 'cash';
+        paymentStatusSelect.value = 'paid';
+        debtDateContainer.style.display = 'none';
+        debtDateInput.value = '';
+
+        confirmBackdrop.style.display = 'flex';
+      }
+
+      function closeConfirmModal() {
+        confirmBackdrop.style.display = 'none';
+      }
+
+      function saveSale() {
+        messageEl.textContent = '';
+        messageEl.className = '';
+
+        if (!cart.length) {
+          messageEl.textContent = 'Cart is empty.';
+          messageEl.className = 'error';
+          return;
+        }
+
+        const subtotal = calculateSubtotal();
+        const discount = getDiscount();
+        let total = subtotal - discount;
+        if (total < 0) total = 0;
+
+        const customerInfo = getSelectedCustomerInfo();
+        const cartSnapshot = cart.map(item => ({ ...item }));
+
+        pendingSaleContext = {
+          subtotal,
+          discount,
+          total,
+          customerId: selectedCustomerId,
+          cartSnapshot,
+          customerInfo
+        };
+
+        openConfirmModal(pendingSaleContext);
+      }
+
+      function confirmSaleFromModal() {
+        if (!pendingSaleContext) {
+          closeConfirmModal();
+          return;
+        }
+        closeConfirmModal();
+
+        const ctx = pendingSaleContext;
+        const { subtotal, discount, total, customerId, cartSnapshot, customerInfo } = ctx;
+
+        const paymentMethod = paymentMethodSelect.value || 'cash';
+        const paymentStatus = paymentStatusSelect.value || 'paid';
+
+        let debtDate = '';
+        if (paymentStatus === 'debt') {
+          debtDate = debtDateInput.value;
+          if (!debtDate) {
+            // if somehow empty, fallback to today
+            debtDate = getTodayForInput();
+          }
+        }
+
+        setSaveButtonDisabled(true);
+        setLoading(true, 'Saving sale...');
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            if (res && res.success) {
+              let msg = 'Sale saved (' + res.itemCount + ' items).';
+              if (res.sellId) {
+                msg += ' Sell_ID: ' + res.sellId;
+              }
+              if (res.bkId) {
+                msg += ' Bk_id: ' + res.bkId;
+              }
+              showMessage(msg, 'success');
+
+              openBillPage(res, customerInfo, subtotal, discount, total);
+
+              cart = [];
+              discountInput.value = 0;
+              renderCart();
+              infoEl.textContent = 'ພ້ອມໃຊ້ງານ, ກະລຸນາສະແກນລະຫັດສິນຄ້າ.';
+            } else {
+              showMessage('Failed to save sale.', 'error');
+            }
+            setLoading(false);
+            setSaveButtonDisabled(false);
+            pendingSaleContext = null;
+          })
+          .withFailureHandler(function (err) {
+            showMessage('Error: ' + err.message, 'error');
+            setLoading(false);
+            setSaveButtonDisabled(false);
+            pendingSaleContext = null;
+          })
+          // ✅ send debtDate to backend
+          .saveSale(cart, customerId, discount, paymentMethod, paymentStatus, debtDate);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Encode Query</title>
+</head>
+<body>
+<h2>Encode Query to URL</h2>
+
+<input id="textInput" type="text" placeholder="Enter text to encode">
+<button onclick="encodeQuery()">Encode & Go</button>
+
+<script>
+function encodeQuery() {
+  const text = document.getElementById('textInput').value;
+
+  // Encode text for safe URL usage
+  const encoded = encodeURIComponent(text);
+
+  // Redirect to decode.html with ?data=...
+  window.location.href = `decode.html?data=${encoded}`;
+}
+</script>
+
+</body>
+</html>
