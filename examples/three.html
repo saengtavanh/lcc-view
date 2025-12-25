@@ -292,6 +292,350 @@
   padding:16px;
 }
 .lock-msg .lock-msg-text{color:var(--fg);font-size:14px;line-height:1.4;}
+
+
+    /* ===== Marking / Annotations panel ===== */
+    .annot-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 12px 10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .annot-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .annot-title{
+      font-weight:700;
+      font-size:16px;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .annot-pill-badge{
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--fg);
+      line-height:1;
+      white-space:nowrap;
+    }
+    .annot-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex:0 0 auto;
+    }
+    .annot-eye{
+      width:32px;
+      height:32px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+      cursor:pointer;
+      padding:0;
+      color:var(--fg);
+    }
+    .annot-eye:hover{background:rgba(255,255,255,.10)}
+    .annot-eye.off{opacity:.55}
+    .annot-meta{display:none;} /* old style: hide counter text in header, we show it in list footer if needed */
+
+    .marking-pill{
+      position:fixed;
+      left:12px;
+      top:72px;
+      z-index:1200;
+      display:none; /* keep element for compatibility, but hide to match old style */
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(17,24,39,.75);
+      border:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+      cursor:pointer;
+      user-select:none;
+      box-shadow:0 8px 24px rgba(0,0,0,.35);
+    }
+.marking-pill img{width:18px;height:18px;opacity:.95}
+    .marking-pill span{
+      min-width:22px;height:22px;
+      display:inline-flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:700;
+      border-radius:999px;
+      background:rgba(255,255,255,.10);
+      color:#e5e7eb;
+      padding:0 6px;
+    }
+    .marking-pill.open{background:rgba(30,41,59,.85)}
+    .annot-panel{
+      position:fixed;
+      left:10px;
+      top:62px;
+      bottom:10px;
+      right:auto;
+      width:360px;
+      max-height:none;
+      height:auto;
+      display:none;
+      flex-direction:column;
+      z-index:1300;
+      background:var(--glass-2);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      box-shadow:0 24px 60px rgba(0,0,0,.55);
+      pointer-events:auto;
+    }
+.annot-panel.open{display:flex}
+    .annot-head{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .annot-title{font-size:14px;font-weight:800;color:#e5e7eb}
+    .annot-meta{margin-left:auto;font-size:12px;color:#9ca3af}
+    
+    .annot-list{
+      padding:10px;
+      overflow:auto;
+    }
+    .annot-empty{
+      display:none;
+      padding:16px;
+      color:#9ca3af;
+      font-size:13px;
+    }
+    .annot-item{
+      display:flex;
+      gap:10px;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      cursor:pointer;
+      margin-bottom:10px;
+    }
+    .annot-item:hover{background:rgba(255,255,255,.07)}
+    .annot-thumb{
+      width:64px;height:48px;
+      border-radius:10px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      overflow:hidden;
+      flex:0 0 auto;
+      display:flex;align-items:center;justify-content:center;
+      color:#9ca3af;
+      font-size:12px;
+    }
+    .annot-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .annot-body{flex:1;min-width:0}
+    .annot-name{font-size:13px;font-weight:800;color:#e5e7eb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .annot-desc{margin-top:4px;font-size:12px;color:#cbd5e1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .annot-link{margin-top:6px;font-size:12px;color:#93c5fd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mark-layer{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+    .mark-pin{
+      position:absolute;
+      /*transform:translate(-50%,-100%);
+      pointer-events:auto;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 8px;
+      border-radius:999px;
+      background:rgba(15,23,42,.75);
+      border:1px solid rgba(255,255,255,.10);
+      color:#e5e7eb;
+      font-size:12px;
+      white-space:nowrap;
+      max-width:260px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      backdrop-filter: blur(8px);*/
+    }
+    /*.mark-pin::before{
+      content:"";
+      width:10px;height:10px;border-radius:999px;
+      background:#60a5fa;
+      box-shadow:0 0 0 3px rgba(96,165,250,.25);
+      flex:0 0 auto;
+    }
+    .mark-pin:hover{background:rgba(30,41,59,.85)}*/
+
+
+    /* ===== Marking panel old style override ===== */
+    .marking-pill{display:none !important;}
+    .annot-panel{
+      left:10px !important;
+      right:auto !important;
+      top:62px !important;
+      bottom:10px !important;
+      width:360px !important;
+      max-height:none !important;
+      background:var(--glass-2) !important;
+    }
+    .annot-head{
+      justify-content:space-between !important;
+      padding:12px 12px 10px 12px !important;
+    }
+    .annot-left{display:flex !important;align-items:center !important;gap:10px !important;min-width:0 !important;}
+    .annot-actions{display:flex !important;align-items:center !important;gap:8px !important;}
+    .annot-title{font-size:16px !important;font-weight:700 !important;}
+    .annot-meta{display:none !important;}
+
+
+    /* ===== Marking pins (link icon + hover title) ===== */
+    .mark-pin{
+      position:absolute;
+      transform:translate(-50%,-100%);
+      pointer-events:auto;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .mark-pin-icon{
+      width:52px;height:52px;border-radius:999px;
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.18);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 10px 26px rgba(0,0,0,.45);
+      transition:transform .12s ease, background .12s ease;
+      color:#fff;
+    }
+    .mark-pin-icon svg{width:24px;height:24px;display:block;color:#fff}
+    .mark-pin:hover .mark-pin-icon{
+      background:#2563eb;
+      transform:scale(1.05);
+    }
+    .mark-pin-tip{
+      display:none;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      font-size:16px;
+      font-weight:700;
+      line-height:1;
+      max-width:420px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      box-shadow:0 10px 26px rgba(0,0,0,.35);
+    }
+    .mark-pin:hover .mark-pin-tip{display:block}
+
+    /* ===== Marking modal (like your first screenshot) ===== */
+    .mk-modal{position:fixed;inset:0;z-index:9999}
+    .mk-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px)}
+    .mk-card{
+      position:absolute;left:50%;top:50%;
+      transform:translate(-50%,-50%);
+      width:min(980px,92vw);
+      max-height:92vh;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      box-shadow:0 18px 60px rgba(0,0,0,.55);
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    .mk-close{
+      position:absolute;right:14px;top:10px;
+      width:38px;height:38px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.45);
+      color:#fff;font-size:22px;cursor:pointer;
+    }
+    .mk-image-wrap{
+      background:rgba(0,0,0,.35);
+      border-radius:16px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:220px;
+    }
+    .mk-image-wrap img{
+      width:100%;
+      height:auto;
+      max-height:56vh;
+      object-fit:contain;
+      display:block;
+    }
+    .mk-info{
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:16px 18px;
+    }
+    .mk-title{font-size:22px;font-weight:800;color:#fff;margin:0 0 8px}
+    .mk-desc{font-size:14px;color:rgba(255,255,255,.85);line-height:1.6}
+    .mk-link{
+      display:block;
+      text-align:center;
+      padding:14px 16px;
+      border-radius:999px;
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.10);
+      color:#7CFFB2;
+      font-weight:800;
+      text-decoration:underline;
+      letter-spacing:.2px;
+    }
+    .mk-link:empty{display:none}
+
+
+
+    /* ---------- Version badge (bottom-right) ---------- */
+    #version-badge{
+      position:fixed;
+      right:14px;
+      bottom:14px;
+      z-index:2000;
+      pointer-events:none;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:#fff;
+      font:600 14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      text-shadow:0 2px 12px rgba(0,0,0,.85);
+      opacity:.95;
+      user-select:none;
+    }
+    #version-badge .vb-logo{
+      height:16px;
+      width:auto;
+      display:none;
+      opacity:.95;
+      filter:drop-shadow(0 2px 10px rgba(0,0,0,.75));
+    }
+    #version-badge .vb-line{
+      display:flex;
+      align-items:baseline;
+      gap:6px;
+      white-space:nowrap;
+    }
+    #version-badge .vb-app{font-weight:800;letter-spacing:.2px}
+    #version-badge .vb-ver{font-weight:700;opacity:.92}
+
 </style>
 </head>
 <body>
@@ -311,6 +655,16 @@
       </div>
 
       <!-- Perspective button with submenu -->
+      
+      <div  id="btn-switch-mode" aria-label="Switch to point cloud" title="Switch to point cloud">
+        <img class="btn" src="../assets/point-view.svg" alt="">
+      </div>
+      <div id="btn-measure" aria-label="Measure" title="Measure">
+        <img class="btn" src="../assets/measure.svg" alt="">
+      </div>
+      <div id="btn-annot" aria-label="Annotations" title="Annotations">
+        <img class="btn" src="../assets/marking.svg" alt="">
+      </div>
       <div style="position:relative">
         <div id="btn-perspective" aria-label="Perspective" title="Perspective">
           <img class="btn" id="fps-icon" src="../assets/first-person.svg" alt="">
@@ -327,16 +681,6 @@
           </div>
           <div class="tip" id="persp-tip">First-person</div>
         </div>
-      </div>
-
-      <div  id="btn-switch-mode" aria-label="Switch to point cloud" title="Switch to point cloud">
-        <img class="btn" src="../assets/point-view.svg" alt="">
-      </div>
-      <div id="btn-measure" aria-label="Measure" title="Measure">
-        <img class="btn" src="../assets/measure.svg" alt="">
-      </div>
-      <div id="btn-annot" aria-label="Annotations" title="Annotations">
-        <img class="btn" src="../assets/marking.svg" alt="">
       </div>
       <div id="btn-options" aria-label="Options" title="Options">
         <img class="btn" src="../assets/option.svg" alt="">
@@ -440,6 +784,32 @@
   <div id="labels-layer" class="labels-layer"></div>
 
   <div id="loupe" class="loupe"><canvas id="loupeCanvas" class="loupe-canvas"></canvas></div>
+
+  <!-- ===== Marking / Annotations ===== -->
+  <div id="marking-pill" class="marking-pill" title="Marking Data">
+    <img class="btn" src="../assets/marking.svg" alt="">
+    <span id="annot-count-pill">0</span>
+  </div>
+
+  <div id="annot-panel" class="annot-panel" aria-hidden="true">
+    <div class="annot-head">
+      <div class="annot-left">
+        <div class="annot-title">Annotations</div>
+        <div class="annot-pill-badge" id="annot-mode-pill">Marking</div>
+      </div>
+      <div class="annot-actions">
+        <button id="annot-eye" class="annot-eye" title="Toggle marking visibility" aria-label="Toggle marking visibility">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="annot-list" class="annot-list"></div>
+    <div id="annot-empty" class="annot-empty">No marking data</div>
+  </div>
+
 
   <!-- ===== HELP overlay (updated) ===== -->
   <div id="help" class="help-back" aria-hidden="true">
@@ -553,6 +923,107 @@
     import { FirstPersonControls } from "./engine/three/FirstPersonControls.js";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { LCCRender } from "../sdk/lcc-0.5.4.js";
+
+
+    // =============================
+    // Version badge (git-based)
+    // =============================
+    // How to set from git (recommended at build time):
+    // - Define a global before this module runs: window.__GIT_VERSION__ = "v1.10.1.INT";
+    // - OR generate a /version.json or /version.txt file at deploy time (see loadGitVersion()).
+    const __versionEl = document.getElementById("viewer-version");
+    const __vbLogoEl = document.getElementById("vb-logo");
+
+    async function __tryLoadLogo(){
+      if(!__vbLogoEl) return;
+      const candidates = [
+        "../assets/xgrids.svg",
+        "../assets/xgrids.png",
+        "../assets/logo.svg",
+        "../assets/logo.png",
+      ];
+      for (const src of candidates){
+        try{
+          const img = new Image();
+          const ok = await new Promise((resolve)=>{
+            img.onload = ()=>resolve(true);
+            img.onerror = ()=>resolve(false);
+            img.src = src;
+          });
+          if (ok){
+            __vbLogoEl.src = src;
+            __vbLogoEl.style.display = "block";
+            break;
+          }
+        }catch(_){}
+      }
+    }
+
+    function __normalizeVersion(v){
+      const s = String(v || "").trim();
+      if(!s) return "";
+      // keep original if it already looks like it includes a version prefix
+      if (/^[vV]\d/.test(s)) return s.replace(/^V/, "v");
+      return "v" + s;
+    }
+
+    async function loadGitVersion(){
+      try{
+        // 1) runtime global (inject from server/build)
+        let v = (window.__GIT_VERSION__ || window.__APP_VERSION__ || window.APP_VERSION || "").toString().trim();
+
+        // 2) meta tag (optional): <meta name="git-version" content="v1.2.3" />
+        if(!v){
+          const meta = document.querySelector('meta[name="git-version"]');
+          v = (meta?.getAttribute("content") || "").trim();
+        }
+
+        // 3) query param fallback (?v=1.2.3 or ?version=v1.2.3)
+        if(!v){
+          const qs = new URLSearchParams(window.location.search);
+          v = (qs.get("v") || qs.get("version") || "").trim();
+        }
+
+        // 4) fetch from deploy artifact
+        if(!v){
+          const candidates = ["version.json", "version.txt", "git-version.txt", "build.json"];
+          for (const name of candidates){
+            try{
+              const url = new URL(name, window.location.href);
+              const res = await fetch(url, { cache: "no-store" });
+              if(!res.ok) continue;
+
+              if (name.endsWith(".json")){
+                const j = await res.json();
+                // common shapes
+                v =
+                  (j.version || j.tag || j.gitVersion || j.name || "").toString().trim();
+
+                // If both version + commit exist, append short commit like the screenshot style
+                if (j.version && j.commit && !String(v).includes(String(j.commit).slice(0,7))){
+                  v = `${j.version}.${String(j.commit).slice(0,7)}`;
+                }
+              } else {
+                v = (await res.text()).trim();
+              }
+
+              if(v) break;
+            }catch(_){}
+          }
+        }
+
+        if(!v) v = "dev";
+        const norm = __normalizeVersion(v);
+
+        if(__versionEl) __versionEl.textContent = norm;
+      }catch(_){
+        if(__versionEl) __versionEl.textContent = "vdev";
+      }
+    }
+
+    // fire-and-forget
+    loadGitVersion();
+    __tryLoadLogo();
 
     const scene = new THREE.Scene();
     const renderer = new THREE.WebGLRenderer({ antialias:true });
@@ -947,7 +1418,12 @@ if (!lccLink){
     // LCC LOAD & COLLISION SETUP
     // ==========================================
     let hasCollisionData = false;
-    const modelMatrix = new THREE.Matrix4(-1,0,0,0, 0,0,1,0  , 0,1,0,0, 0,0,0,1);
+    const modelMatrix = new THREE.Matrix4(
+  -1,0,0,0,
+   0,0,1,0,
+   0,1,0,0,
+   0,0,0,1
+);
     
     
 function createNoopLccObj(){
@@ -1105,6 +1581,476 @@ if (!__BLOCK_LOAD__){
     loupeCanvas.width = 256;
     loupeCanvas.height = 256;
     const loupeCtx = loupeCanvas.getContext('2d');
+
+    /* =========================
+       Marking / Annotations (attrs.lcp -> annotation.marks)
+    ==========================*/
+    const annotPanel = $("annot-panel");
+    const markingPill = $("marking-pill");
+    const annotListEl = $("annot-list");
+    const annotEmptyEl = $("annot-empty");
+    const annotCountEl = $("annot-count");
+    const annotCountPillEl = $("annot-count-pill");
+    const annotEyeBtn = $("annot-eye");
+    const btnAnnot = $("btn-annot");
+
+    // layer for 3D pins/labels
+    let markLayer = $("mark-layer");
+    if (!markLayer && labelsLayer){
+      markLayer = document.createElement("div");
+      markLayer.id = "mark-layer";
+      markLayer.className = "mark-layer";
+      labelsLayer.appendChild(markLayer);
+    }
+
+    let markingData = [];
+    let showMarkings = true;
+    const markPinsById = new Map();
+    let markingLoadedOnce = false;
+
+    function deriveProjectBaseFromLink(url){
+      if (!url) return "";
+      try{
+        // If it's an absolute URL, keep origin+path.
+        const u = new URL(url, window.location.href);
+        // Remove query/hash and keep folder
+        const path = u.href.split("#")[0].split("?")[0];
+        return path.slice(0, path.lastIndexOf("/") + 1);
+      }catch(_){
+        const clean = String(url).split("#")[0].split("?")[0];
+        return clean.slice(0, clean.lastIndexOf("/") + 1);
+      }
+    }
+    function joinUrl(base, rel){
+      if (!base) return rel || "";
+      if (!rel) return base;
+      if (/^https?:\/\//i.test(rel)) return rel;
+      const b = String(base).replace(/\/+$/,"");
+      const r = String(rel).replace(/^\/+/,"");
+      return `${b}/${r}`;
+    }
+    async function tryFetchTextJSON(url){
+      const res = await fetch(url, { cache:"no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const txt = await res.text();
+      // attrs.lcp is JSON text
+      return JSON.parse(txt);
+    }
+
+    async function loadMarkingsFromAttrsLcp(){
+      const base = deriveProjectBaseFromLink(lccLink);
+      if (!base) return [];
+      const candidates = [
+        joinUrl(base, "attrs.lcp"),
+        joinUrl(base, "assets/attrs.lcp"),
+      ];
+      for (const u of candidates){
+        try{
+          const j = await tryFetchTextJSON(u);
+          const marks = j && j.annotation && Array.isArray(j.annotation.marks) ? j.annotation.marks : null;
+          if (marks && marks.length){
+            // attach base for media resolution
+            return marks.map(m => ({...m, __base: base}));
+          }
+        }catch(_){}
+      }
+      return [];
+    }
+
+    function normalizeMark(mark){
+      const base = mark.__base || deriveProjectBaseFromLink(lccLink);
+      const title = mark.title || mark.name || `Mark #${mark.id ?? ""}`.trim();
+      const description = mark.description || mark.desc || "";
+      const link = mark.link || "";
+      const linkTitle = mark.linkTitle || "";
+      const mp = Array.isArray(mark.markPosition) ? mark.markPosition : (Array.isArray(mark.pos) ? mark.pos : null);
+      const vp = Array.isArray(mark.viewPosition) ? mark.viewPosition : null;
+      const vr = Array.isArray(mark.viewRotation) ? mark.viewRotation : null;
+
+      // pick first image media if exists
+      let thumb = "";
+      if (Array.isArray(mark.medias)){
+        const img = mark.medias.find(x => (x.mediaType||"").toLowerCase()==="image" && x.path);
+        if (img) thumb = joinUrl(base, img.path);
+      }
+      return { raw: mark, id: String(mark.id ?? title), title, description, link, linkTitle, markPosition: mp, viewPosition: vp, viewRotation: vr, thumb };
+    }
+
+    function renderMarkingList(rawMarks){
+      markingData = (rawMarks||[]).map(normalizeMark);
+      // count UI
+      const n = markingData.length;
+      if (annotCountEl) annotCountEl.textContent = String(n);
+      if (annotCountPillEl) annotCountPillEl.textContent = String(n);
+
+      if (!annotListEl) return;
+
+      annotListEl.innerHTML = "";
+      if (annotEmptyEl) annotEmptyEl.style.display = n ? "none" : "block";
+
+      // clear pins
+      markPinsById.clear();
+      if (markLayer) markLayer.innerHTML = "";
+
+      markingData.forEach((m) => {
+        // panel row
+        const row = document.createElement("div");
+        row.className = "annot-item";
+        row.dataset.id = m.id;
+
+        const thumb = document.createElement("div");
+        thumb.className = "annot-thumb";
+        if (m.thumb){
+          const img = document.createElement("img");
+          img.src = m.thumb;
+          img.alt = "";
+          thumb.appendChild(img);
+        } else {
+          thumb.textContent = "Mark";
+        }
+
+        const body = document.createElement("div");
+        body.className = "annot-body";
+
+        const name = document.createElement("div");
+        name.className = "annot-name";
+        name.textContent = m.title || "(untitled)";
+
+        const desc = document.createElement("div");
+        desc.className = "annot-desc";
+        desc.textContent = m.description || "";
+
+        body.appendChild(name);
+        if (m.description) body.appendChild(desc);
+
+        if (m.link){
+          const l = document.createElement("div");
+          l.className = "annot-link";
+          l.textContent = m.linkTitle ? `${m.linkTitle} · ${m.link}` : m.link;
+          body.appendChild(l);
+        }
+
+        row.appendChild(thumb);
+        row.appendChild(body);
+
+        row.addEventListener("click", (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          focusToMark(m);
+          openMarkingModal(m);
+        });
+
+        annotListEl.appendChild(row);
+
+        // pin label
+        if (markLayer && Array.isArray(m.markPosition) && m.markPosition.length>=3){
+          const pin = document.createElement("div");
+          pin.className = "mark-pin";
+          pin.dataset.id = m.id;
+
+          // icon (link style) + hover label (like your screenshots)
+          const icon = document.createElement("div");
+          icon.className = "mark-pin-icon";
+          icon.innerHTML = `
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 13a5 5 0 0 1 0-7l1.2-1.2a5 5 0 0 1 7.1 7.1L17 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M14 11a5 5 0 0 1 0 7L12.8 19.2a5 5 0 0 1-7.1-7.1L7 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          `;
+          const tip = document.createElement("div");
+          tip.className = "mark-pin-tip";
+          tip.textContent = m.title || "Mark";
+
+          pin.appendChild(icon);
+          pin.appendChild(tip);
+
+          pin.addEventListener("click",(e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+            focusToMark(m);
+            openMarkingModal(m);
+          });
+
+          markLayer.appendChild(pin);
+          markPinsById.set(m.id, pin);
+        }
+      });
+
+      // position pins now
+      updateMarkingPins();
+    }
+
+    async function loadMarkings(){
+      // Try attrs.lcp first (your provided format)
+      try{
+        const marks = await loadMarkingsFromAttrsLcp();
+        if (marks && marks.length){
+          renderMarkingList(marks);
+          markingLoadedOnce = true;
+          return;
+        }
+      }catch(e){
+        console.warn("attrs.lcp marking load failed", e);
+      }
+
+      // Fallback: keep empty (you can extend to other sources later)
+      renderMarkingList([]);
+      markingLoadedOnce = true;
+    }
+
+
+    // --- attrs.lcp coordinate conversion (Z-up -> Three.js Y-up) ---
+    // attrs.lcp positions use Z as "up" (see spawnPoint.position[2]=1.6).
+    // Convert: [x, y, z] (LCP) -> (x, z, y) (Three)
+    const __LCP_BASIS__ = new THREE.Matrix4().set(
+      1, 0, 0, 0,
+      0, 0, 1, 0,
+      0, 1, 0, 0,
+      0, 0, 0, 1
+    );
+    const __LCP_BASIS_INV__ = new THREE.Matrix4().copy(__LCP_BASIS__).transpose();
+
+    function lcpPosToThree(pos){
+      if (!Array.isArray(pos) || pos.length < 3) return null;
+      const x = Number(pos[0]) || 0;
+      const y = Number(pos[1]) || 0;
+      const z = Number(pos[2]) || 0;
+      return new THREE.Vector3(-x, z, y);
+    }
+
+
+    function lcpQuatToThree(q, order){
+      if (!Array.isArray(q) || q.length < 4) return null;
+
+      // attrs.lcp may store quaternion as [x,y,z,w] or [w,x,y,z]
+      let x=0,y=0,z=0,w=1;
+      const a0 = Number(q[0]) || 0;
+      const a1 = Number(q[1]) || 0;
+      const a2 = Number(q[2]) || 0;
+      const a3 = Number(q[3]) || 1;
+
+      if (order === "wxyz"){
+        w = a0; x = a1; y = a2; z = a3;
+      } else { // "xyzw" default
+        x = a0; y = a1; z = a2; w = a3;
+      }
+
+      const qs = new THREE.Quaternion(x,y,z,w);
+      // normalize just in case
+      const n = Math.sqrt(qs.x*qs.x + qs.y*qs.y + qs.z*qs.z + qs.w*qs.w) || 1;
+      qs.x/=n; qs.y/=n; qs.z/=n; qs.w/=n;
+
+      // Coordinate-system conversion: R_three = M * R_lcp * M^-1
+      const rs = new THREE.Matrix4().makeRotationFromQuaternion(qs);
+      const rt = new THREE.Matrix4().multiplyMatrices(__LCP_BASIS__, rs).multiply(__LCP_BASIS_INV__);
+      return new THREE.Quaternion().setFromRotationMatrix(rt);
+    }
+
+    // Choose the best quaternion interpretation for this mark
+    // (fixes "view is reversed" by also testing a 180° yaw around world-up)
+    function chooseBestViewQuatForMark(mark, vp3, mp3){
+      if (!mark || !Array.isArray(mark.viewRotation) || !vp3 || !mp3) return null;
+
+      const toT = mp3.clone().sub(vp3);
+      if (toT.lengthSq() < 1e-8) return null;
+      toT.normalize();
+
+      const yaw180 = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0), Math.PI);
+
+      const candidates = [];
+      for (const order of ["xyzw","wxyz"]){
+        const qBase = lcpQuatToThree(mark.viewRotation, order);
+        if (!qBase) continue;
+
+        // candidate A: as-is
+        {
+          const fwd = new THREE.Vector3(0,0,-1).applyQuaternion(qBase).normalize();
+          candidates.push({ q: qBase, score: fwd.dot(toT) });
+        }
+        // candidate B: yaw 180 (common when source camera forward differs)
+        {
+          const qFlip = qBase.clone();
+          qFlip.premultiply(yaw180);
+          const fwd = new THREE.Vector3(0,0,-1).applyQuaternion(qFlip).normalize();
+          candidates.push({ q: qFlip, score: fwd.dot(toT) });
+        }
+      }
+
+      candidates.sort((a,b)=>b.score - a.score);
+      return candidates[0]?.q || null;
+    }
+    
+    function focusToMark(m){
+      try{
+        const mp = m && m.markPosition;
+        const vp = m && m.viewPosition;
+
+        const mp3 = lcpPosToThree(mp);
+        const vp3 = lcpPosToThree(vp);
+
+        // Move camera to saved viewPosition if available
+        if (vp3){
+          camera.position.copy(vp3);
+        } else if (mp3){
+          camera.position.copy(mp3.clone().add(new THREE.Vector3(0, 0.2, 3)));
+        }
+
+        // Keep existing viewRotation support (if it helps), but ALWAYS face toward the mark.
+        let qBest = null;
+        if (mp3 && Array.isArray(m && m.viewRotation)){
+          qBest = chooseBestViewQuatForMark(m, vp3, mp3);
+        } else if (Array.isArray(m && m.viewRotation)){
+          qBest = lcpQuatToThree(m.viewRotation, "xyzw") || lcpQuatToThree(m.viewRotation, "wxyz");
+        }
+        if (qBest){
+          camera.quaternion.copy(qBest);
+        }
+
+        // Force the camera to face the marking target.
+        // This avoids the "back facing the pole" problem caused by different forward conventions.
+        if (mp3){
+          const orbit = window.__orbit__;
+          if (orbit && orbit.target){
+            orbit.target.copy(mp3);
+            orbit.update();
+          }
+          camera.lookAt(mp3);
+
+          const fp = window.__fp__;
+          if (fp && typeof fp.lookAt === "function"){
+            fp.lookAt(mp3);
+          }
+        }
+
+        // Nudge controllers
+        const fp2 = window.__fp__;
+        if (fp2 && typeof fp2.update==="function"){
+          fp2.update(0);
+        }
+
+        // Reposition pins/overlays after camera change
+        if (typeof updateMarkingPins === "function"){
+          requestAnimationFrame(()=> updateMarkingPins());
+        }
+      }catch(e){
+        console.warn("focusToMark failed", e);
+      }
+    }
+
+
+    // ----- Marking modal -----
+    const mkModal = $("marking-modal");
+    const mkBackdrop = $("mk-backdrop");
+    const mkClose = $("mk-close");
+    const mkImgWrap = $("mk-image-wrap");
+    const mkImg = $("mk-image");
+    const mkTitle = $("mk-title");
+    const mkDesc = $("mk-desc");
+    const mkLink = $("mk-link");
+
+    function closeMarkingModal(){
+      if (!mkModal) return;
+      mkModal.style.display = "none";
+      document.body.classList.remove("mk-open");
+    }
+    function openMarkingModal(m){
+      if (!mkModal) return;
+      if (mkTitle) mkTitle.textContent = m?.title || "";
+      if (mkDesc) mkDesc.textContent = m?.description || "";
+      const url = m?.link || "";
+      const linkText = m?.linkTitle || url || "";
+      if (mkLink){
+        if (url){
+          mkLink.href = url;
+          mkLink.textContent = linkText;
+          mkLink.style.display = "block";
+        } else {
+          mkLink.textContent = "";
+          mkLink.style.display = "none";
+        }
+      }
+
+      const imgUrl = m?.thumb || "";
+      if (mkImg && mkImgWrap){
+        if (imgUrl){
+          mkImg.src = imgUrl;
+          mkImgWrap.style.display = "flex";
+        } else {
+          mkImg.removeAttribute("src");
+          mkImgWrap.style.display = "none";
+        }
+      }
+
+      mkModal.style.display = "block";
+      document.body.classList.add("mk-open");
+    }
+
+    if (mkBackdrop) mkBackdrop.addEventListener("click", closeMarkingModal);
+    if (mkClose) mkClose.addEventListener("click", closeMarkingModal);
+    document.addEventListener("keydown", (e)=>{
+      if (e.key === "Escape") closeMarkingModal();
+    });
+
+
+
+    function updateMarkingPins(){
+      if (!markLayer) return;
+      if (!markingData || !markingData.length) return;
+      if (typeof worldToScreen !== "function") return;
+      const forceHide = suppressOverlays || !showMarkings; // reuse existing flag + marking toggle
+      for (const m of markingData){
+        const pin = markPinsById.get(m.id);
+        if (!pin) continue;
+        if (forceHide || !Array.isArray(m.markPosition) || m.markPosition.length<3){
+          pin.style.display = "none";
+          continue;
+        }
+        const p3raw = lcpPosToThree(m.markPosition);
+        // lift a little so the pin doesn't intersect the floor
+        const p3 = p3raw ? p3raw.clone().add(new THREE.Vector3(0,0.15,0)) : null;
+        const s = p3 ? worldToScreen(p3.x, p3.y, p3.z) : null;
+        if (!s){
+          pin.style.display = "none";
+          continue;
+        }
+        pin.style.display = "flex";
+        pin.style.left = `${s.x}px`;
+        pin.style.top = `${s.y}px`;
+      }
+    }
+
+    function setAnnotOpen(open){
+      if (annotPanel) annotPanel.classList.toggle("open", !!open);
+      if (markingPill) markingPill.classList.toggle("open", !!open);
+      if (annotPanel) annotPanel.setAttribute("aria-hidden", open ? "false" : "true");
+      if (open && !markingLoadedOnce){
+        loadMarkings();
+      } else if (open){
+        updateMarkingPins();
+      }
+    }
+    function toggleAnnotPanel(force){
+      const nowOpen = annotPanel && annotPanel.classList.contains("open");
+      const next = (typeof force==="boolean") ? force : !nowOpen;
+      setAnnotOpen(next);
+    }
+
+    // Bind UI
+    if (btnAnnot) btnAnnot.addEventListener("click", ()=>{
+      btnAnnot.classList.toggle("active");
+      toggleAnnotPanel()
+    });
+    if (markingPill) markingPill.addEventListener("click", ()=>toggleAnnotPanel());
+    if (annotEyeBtn) annotEyeBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      showMarkings = !showMarkings;
+      annotEyeBtn.classList.toggle("off", !showMarkings);
+      updateMarkingPins();
+    });
+
+
+
 
     let suppressOverlays = false;
     function hideCrosshair(){ const ch = document.querySelector('#crosshair'); if(ch) ch.style.display='none'; }
@@ -1396,7 +2342,7 @@ if (!__BLOCK_LOAD__){
     // Position loupe above/below the mouse (mouse is NOT the loupe center),
     // and sample pixels from the WebGL framebuffer via readPixels.
     const loupeScratch = document.createElement('canvas');
-    const LOUPE_SRC = 24; // sample size in canvas pixels (smaller = stronger zoom)
+    const LOUPE_SRC = 34; // sample size in canvas pixels (smaller = stronger zoom)
     loupeScratch.width = LOUPE_SRC;
     loupeScratch.height = LOUPE_SRC;
     const loupeScratchCtx = loupeScratch.getContext('2d');
@@ -1837,6 +2783,9 @@ if (!__BLOCK_LOAD__){
       }else{
         if(previewAreaFill) previewAreaFill.style.display='none';
       }
+
+      // Marking pins
+      try{ updateMarkingPins(); }catch(_){ }
     };
 
     clearAll = function(){
@@ -2077,5 +3026,32 @@ if (!__BLOCK_LOAD__){
     <div class="lock-msg-text">Password required to open this file.</div>
   </div>
 </div>
+
+  <!-- Marking modal (opens when clicking marking list/pin) -->
+  <div id="marking-modal" class="mk-modal" style="display:none">
+    <div class="mk-backdrop" id="mk-backdrop"></div>
+    <div class="mk-card" role="dialog" aria-label="Marking">
+      <button class="mk-close" id="mk-close" aria-label="Close">×</button>
+      <div class="mk-image-wrap" id="mk-image-wrap">
+        <img id="mk-image" alt="">
+      </div>
+      <div class="mk-info">
+        <div class="mk-title" id="mk-title"></div>
+        <div class="mk-desc" id="mk-desc"></div>
+      </div>
+      <a class="mk-link" id="mk-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+    </div>
+  </div>
+
+
+  <!-- Version badge (bottom-right) -->
+  <div id="version-badge" aria-hidden="true">
+    <img id="vb-logo" class="vb-logo" alt="">
+    <div class="vb-line">
+      <span class="vb-app">Viewer</span>
+      <span id="viewer-version" class="vb-ver">v0.0.0</span>
+    </div>
+  </div>
+
 </body>
 </html>
